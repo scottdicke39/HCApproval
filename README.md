@@ -243,19 +243,19 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 ## 📈 Roadmap
 
 ### **Q4 2025**
-- [ ] Mobile app for submissions
-- [ ] Analytics dashboard
-- [ ] Slack workflow builder integration
+- [ ] Enhanced Slack notifications with blocks
+- [ ] Analytics dashboard for approval metrics
+- [ ] Custom Linear fields integration
 
 ### **Q1 2026**
-- [ ] AI-powered budget suggestions
-- [ ] Predictive hiring timelines
-- [ ] Multi-tenant support
+- [ ] AI-powered budget suggestions (using OpenAI)
+- [ ] Predictive hiring timelines based on historical data
+- [ ] Workday API integration
 
 ### **Q2 2026**
-- [ ] Workday integration
-- [ ] Custom workflow builders
-- [ ] Advanced reporting
+- [ ] Custom workflow builders (no-code)
+- [ ] Advanced reporting and exports
+- [ ] Multi-tenant support for agencies
 
 ---
 
