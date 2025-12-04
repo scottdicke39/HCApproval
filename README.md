@@ -1,319 +1,346 @@
-# HC Approval System
+# 🎯 HC Approval System
 
-> A modern, automated headcount approval workflow built with Slack, Linear, Ashby, and Glean AI
+**A comprehensive, automated headcount approval workflow system**
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green)](https://nodejs.org/)
+Integrates Slack, Linear, Ashby, Glean AI, and Notion to streamline the entire hiring lifecycle from initial request through hire.
 
 ---
 
-## 🎯 Overview
-
-The HC Approval system streamlines headcount requests by providing:
-
-- ✅ **Conversational AI submissions** via Glean AI Agent
-- ✅ **Interactive Slack forms** with `/request-headcount` command
-- ✅ **Automated Linear workflow** management with beautiful formatting
-- ✅ **Real-time ATS integration** with Ashby API
-- ✅ **Daily data synchronization** via CSV import
-- ✅ **Smart notifications** at every workflow stage
-
-**Built for:** Startups and mid-size companies that need enterprise-grade HC approval workflows without the enterprise price tag.
-
----
-
-## ✨ Features
+## 🌟 Key Features
 
 ### **Multiple Submission Methods**
-- **Slack Modal** - Quick form-based submissions
-- **Glean AI Agent** - Conversational, guided submissions
-- **CSV Bulk Upload** - Import 5+ roles at once
+- ✅ **Slack Commands** - Interactive `/request-headcount` modal
+- ✅ **Glean AI Agent** - Conversational submissions via chat
+- ✅ **CSV Bulk Upload** - Import multiple requests at once
+- ✅ **Notion Forms** - Web-based form submissions
+- All methods route identically with same field validation and consistent Linear issue format
 
 ### **Automated Workflows**
-- Finance review and budget validation
-- HRBP and executive approvals
-- Automatic routing based on department
-- Stage-based state management
+- ✅ **Auto-assignment** - Finance BPs auto-assigned based on department
+- ✅ **Auto-subscription** - Stakeholders (HRBP, Rec Ops, Strategy/CoS) auto-subscribed
+- ✅ **Auto-labeling** - Employment type, department, location, priority labels
+- ✅ **Timeline tracking** - Automatic stage history and time-in-stage tracking
+- ✅ **Smart re-assignment** - Recruiting Managers assigned when opened in ATS
+- ✅ **Auto-fix formatting** - Standardizes issue descriptions and adds missing sections
 
-### **Beautiful Linear Issues**
-Every submission creates a professional, scannable Linear issue with:
-- Header summary with key details
-- Finance & compensation review section
-- Recruiting status (auto-updated from ATS)
-- Request context (backfill/net new details)
-- Stakeholder table
-- Timeline tracking
-- Hire details
+### **Beautiful Linear Format**
+- ✅ **Professional issue layout** - Scannable, organized sections
+- ✅ **Auto-updating sections** - Recruiting status syncs from Ashby
+- ✅ **Visual hierarchy** - Clear separators, emojis, tables
+- ✅ **Stakeholder visibility** - Finance, HRBP, Recruiting clearly identified
 
-### **Smart Automation**
-- **Daily Ashby Sync (2 AM)** - Automatic CSV import and issue updates
-- **Real-time Webhooks** - Offer created, candidate hired
-- **Label Management** - Auto-tags with FIN ID, department, division, recruiter
-- **Project Routing** - Routes to correct finance approver
+### **Integrations**
+- ✅ **Slack** - Interactive modals, notifications, commands
+- ✅ **Linear** - Issue tracking, webhooks, automation
+- ✅ **Ashby** - ATS sync, recruiter/coordinator labeling, P-code/M-code tracking
+- ✅ **Glean AI** - Conversational AI agent for submissions and questions
+- ✅ **Notion** - Knowledge base sync, capacity tracking
+- ✅ **Pinecone** - Compensation data auto-fill (optional)
 
-### **Notifications**
-- Slack notifications at every stage
-- Hiring manager updates
-- Finance team alerts
-- Recruiting handoff
-
----
-
-## 🏗️ Tech Stack
-
-**Frontend:**
-- [Slack Bolt](https://slack.dev/bolt-js/) - Interactive modals and slash commands
-- [Glean AI](https://www.glean.com/) - Conversational AI agent
-
-**Backend:**
-- [Node.js](https://nodejs.org/) 18+ with TypeScript
-- [Linear SDK](https://developers.linear.app/docs/sdk) - Issue management
-- [Ashby API](https://developers.ashbyhq.com/) - ATS integration
-
-**Hosting:**
-- [Railway](https://railway.app/) - Auto-deploy from GitHub
-- Any Node.js-compatible host works
-
-**Database:**
-- Linear issues as system of record (no separate database needed!)
+### **Advanced Features**
+- ✅ **Capacity Tracker** - Month-over-month headcount planning
+- ✅ **Compensation Auto-fill** - Pave data integration via Pinecone
+- ✅ **Executive Projects** - Division-based project organization
+- ✅ **Channel-based Routing** - Auto-routing based on Slack channel
+- ✅ **Confidential Requests** - Secure handling for sensitive roles
+- ✅ **Weekly Active Jobs** - Automated posting to #hiring channels
 
 ---
 
-## 📊 Architecture
+## 🏗️ Architecture
 
 ```
-┌─────────────┐
-│ Slack Bot   │────┐
-└─────────────┘    │
-                   │
-┌─────────────┐    │    ┌──────────────┐
-│ Glean AI    │────┼───▶│   Backend    │
-└─────────────┘    │    │   (Railway)  │
-                   │    └──────┬───────┘
-┌─────────────┐    │           │
-│ CSV Upload  │────┘           │
-└─────────────┘                │
-                               ▼
-                    ┌──────────────────┐
-                    │ Linear Workflow  │◀───┐
-                    └────────┬─────────┘    │
-                             │              │
-                             ▼              │
-                    ┌──────────────────┐    │
-                    │  Ashby ATS       │────┘
-                    └──────────────────┘
-                         (Webhooks)
+┌─────────────────┐
+│  Slack User     │
+│  /request-hc    │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Slack Bot      │
+│  (Bolt.js)      │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐       ┌──────────────┐
+│  Linear API     │◄─────►│  Webhooks    │
+│  (Issue Mgmt)   │       │  Auto-fix    │
+└────────┬────────┘       │  Auto-label  │
+         │                └──────────────┘
+         ▼
+┌─────────────────┐
+│  Ashby API      │
+│  (ATS Sync)     │
+└─────────────────┘
 ```
 
-See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed flow diagrams.
+**Key Principles:**
+- **Linear as Source of Truth** - All request data lives in Linear issues
+- **Event-Driven Architecture** - Webhooks trigger automated actions
+- **Smart Automation** - Business rules drive auto-assignment and labeling
 
 ---
 
 ## 🚀 Quick Start
 
-### **Prerequisites**
+### Prerequisites
 - Node.js 18+
 - Slack workspace with admin access
 - Linear workspace
-- (Optional) Ashby account
-- (Optional) Glean workspace
+- Ashby account (optional, for ATS integration)
+- Glean workspace (optional, for AI agent)
 
-### **Installation**
+### Installation
 
-```bash
-# Clone the repo
-git clone https://github.com/scottdicke39/HCApproval.git
-cd HCApproval
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/scottdicke39/HCApproval.git
+   cd HCApproval
+   ```
 
-# Install dependencies
-npm install
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-# Copy environment template
-cp .env.example .env
+3. **Configure environment variables**
+   ```bash
+   cp env.example .env
+   # Edit .env with your actual values
+   ```
 
-# Add your API keys (see SETUP.md for details)
-# Edit .env file
+4. **Set up Slack App**
+   - Create new Slack app at https://api.slack.com/apps
+   - Enable Socket Mode
+   - Add bot scopes: `chat:write`, `commands`, `users:read`, `channels:read`, `files:read`
+   - Create slash command: `/request-headcount`
+   - Install app to workspace
 
-# Build
-npm run build
+5. **Set up Linear**
+   - Create team for headcount approvals
+   - Get API key from Settings → API
+   - Create webhook pointing to your server
+   - Set up workflow states (see `docs/setup/LINEAR-STATES-SETUP.md`)
 
-# Start
-npm start
-```
-
-### **Deploy to Railway**
-
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new)
-
-1. Click "Deploy on Railway"
-2. Connect your GitHub account
-3. Add environment variables
-4. Deploy!
-
-See [SETUP.md](docs/SETUP.md) for detailed deployment instructions.
-
----
-
-## 📸 Screenshots
-
-### **Slack Modal Submission**
-![Slack Modal](docs/images/slack-modal.png)
-
-### **Glean AI Agent Conversation**
-![Glean AI](docs/images/glean-ai.png)
-
-### **Beautiful Linear Issue**
-![Linear Issue](docs/images/linear-issue.png)
+6. **Build and run**
+   ```bash
+   npm run build
+   npm start
+   ```
 
 ---
 
 ## 📚 Documentation
 
-- **[Architecture](docs/ARCHITECTURE.md)** - System design and data flow
-- **[Setup Guide](docs/SETUP.md)** - Deployment and configuration
-- **[Workflow](docs/WORKFLOW.md)** - HC approval process
-- **[Glean Integration](docs/GLEAN-INTEGRATION.md)** - AI agent setup
-- **[Linear Format](docs/LINEAR-FORMAT.md)** - Issue formatting details
-- **[API Reference](docs/API.md)** - Webhook specifications
+### Setup & Configuration
+- [Railway Deployment](docs/setup/RAILWAY-DEPLOYMENT.md)
+- [Linear Setup](docs/setup/LINEAR-CUSTOM-FIELDS-SETUP.md)
+- [Linear States Setup](docs/setup/LINEAR-STATES-SETUP.md)
+- [Linear Webhooks](docs/setup/LINEAR-WEBHOOK-SETUP.md)
+- [Ashby Webhooks](docs/setup/ASHBY-WEBHOOK-SETUP.md)
+- [Glean AI Agent Setup](docs/GLEAN-AI-AGENT-SETUP.md)
+- [Security Hardening](docs/setup/SECURITY-HARDENING.md)
+
+### User Guides
+- [CSV Bulk Upload Guide](docs/guides/CSV-BULK-UPLOAD.md)
+- [Confidential Workflow](docs/guides/CONFIDENTIAL-WORKFLOW.md)
+- [Linear Views Recommended](docs/guides/LINEAR-VIEWS-RECOMMENDED.md)
+- [HAI Swap Workflow](docs/guides/HAI-SWAP-WORKFLOW.md)
+
+### Technical Documentation
+- [Architecture Overview](docs/technical/ARCHITECTURE.md)
+- [Glean Agent Workflow](docs/GLEAN-AGENT-WORKFLOW.md)
+- [Beautiful Format Rollout](docs/NEW-FORMAT-ROLLOUT.md)
+- [Ashby Integration](docs/technical/ASHBY-INTEGRATION.md)
 
 ---
 
-## 🎓 Usage Examples
+## 🛠️ Tech Stack
 
-### **Slack Submission**
-```
-/request-headcount
-```
-Fill out the interactive form → Submit → Linear issue created
-
-### **Glean AI Submission**
-```
-"I need to hire a Senior Software Engineer for the Engineering team"
-```
-Answer AI's questions → Review → Submit → Linear issue created
-
-### **CSV Bulk Upload**
-Upload CSV with 5+ roles → Bot processes → All Linear issues created
+- **Runtime**: Node.js 18+ with TypeScript
+- **Framework**: Slack Bolt.js (Socket Mode)
+- **APIs**: 
+  - Linear SDK (`@linear/sdk`)
+  - Ashby REST API
+  - Slack Web API
+  - Notion API (`@notionhq/client`)
+  - Pinecone (optional, for comp data)
+- **Deployment**: Railway, Render, or any Node.js host
+- **Database**: None (stateless, uses Linear as source of truth)
 
 ---
 
-## 🔧 Configuration
+## 📦 Project Structure
 
-### **Environment Variables**
+```
+HCApproval/
+├── server/
+│   ├── index.ts                 # Main server and Slack commands
+│   ├── slack-app.ts             # Slack bot initialization
+│   ├── slack-commands.ts        # Slash command handlers
+│   ├── linear/
+│   │   ├── client.ts            # Linear API client
+│   │   ├── auto-fix.ts         # Auto-fix formatting on webhooks
+│   │   ├── smart-automation.ts  # Auto-labeling and assignment
+│   │   └── config.ts           # Linear configuration
+│   ├── ashby/
+│   │   ├── client.ts           # Ashby API client
+│   │   └── webhook.ts          # Ashby webhook handler
+│   ├── glean/
+│   │   ├── webhook.ts          # Glean AI agent webhook
+│   │   └── interactive-intake-webhook.ts
+│   ├── notion/
+│   │   └── playbook-sync.ts    # Notion knowledge base sync
+│   ├── utils/
+│   │   ├── issue-description-builder.ts  # Beautiful format builder
+│   │   ├── csv-bulk-upload.ts  # CSV processing
+│   │   ├── compensation-auto-fill.ts     # Pave data integration
+│   │   └── capacity-tracker.ts # Capacity planning
+│   └── cron/
+│       ├── daily-sync.ts       # Daily Ashby CSV sync
+│       └── weekly-jobs-sync.ts # Weekly active jobs posting
+├── scripts/
+│   ├── import-ashby-csv.ts     # CSV import processor
+│   └── sync-linear-to-notion.ts
+├── docs/                       # Documentation
+│   ├── setup/                  # Setup guides
+│   ├── guides/                 # User guides
+│   └── technical/              # Technical docs
+├── examples/                   # Example code
+├── .env.example                # Environment variable template
+├── package.json
+├── tsconfig.json
+└── railway.json                # Railway deployment config
+```
+
+---
+
+## 🔐 Security
+
+- All API keys stored in environment variables
+- Webhook signature verification for Linear and Ashby
+- Slack signing secret validation
+- No sensitive data committed to git
+- Pinecone API keys secured (optional feature)
+
+---
+
+## 📊 Features in Detail
+
+### Beautiful Linear Format
+
+Every HC Approval request creates a professional, scannable Linear issue with:
+
+- **Header Summary** - Role, hiring manager, department, level, location
+- **Finance Section** - FINID, budget estimates, compensation ranges
+- **Recruiting Status** - Auto-updates from Ashby (P-code, recruiter, dates)
+- **Request Context** - Backfill vs Net New, justification
+- **Stakeholders Table** - Finance, HRBP, Recruiting clearly identified
+- **Timeline Tracking** - Automatic stage history logging
+- **Hire Details** - Candidate name, start date (when hired)
+
+See `docs/NEW-FORMAT-ROLLOUT.md` for full details.
+
+### Glean AI Agent
+
+Conversational interface for submitting headcount requests:
+
+- **Intent Detection** - Automatically routes to submission vs. questions
+- **Conversational Collection** - Natural language collection of all fields
+- **Real-time Validation** - Validates levels, departments, divisions
+- **Knowledge Base** - Answers HC Approval and recruiting questions
+- **Fully Integrated** - Creates Linear issues automatically
+
+See `docs/GLEAN-AGENT-WORKFLOW.md` for workflow details.
+
+### CSV Bulk Upload
+
+Import multiple headcount requests at once:
+
+- **Template-based** - Use provided CSV template
+- **Validation** - Checks all required fields
+- **Batch Processing** - Creates multiple Linear issues efficiently
+- **Error Handling** - Reports any issues with specific rows
+
+See `docs/guides/CSV-BULK-UPLOAD.md` for usage.
+
+### Capacity Tracker
+
+Month-over-month headcount planning:
+
+- **Executive Capacity** - Track executive team capacity
+- **Position Capacity** - Track role-level capacity
+- **Notion Integration** - Syncs to Notion databases
+- **Waterfall Views** - Visual capacity planning
+
+See `docs/CAPACITY-TRACKER-GUIDE.md` for setup.
+
+---
+
+## 🚀 Deployment
+
+### Railway (Recommended)
+
+1. Connect GitHub repo to Railway
+2. Add environment variables (see `env.example`)
+3. Railway auto-deploys on push to `main`
+
+See `docs/setup/RAILWAY-DEPLOYMENT.md` for detailed instructions.
+
+### Self-Hosted
 
 ```bash
-# Slack
-SLACK_BOT_TOKEN=xoxb-your-token
-SLACK_APP_TOKEN=xapp-your-token
-
-# Linear
-LINEAR_API_KEY=lin_api_your-key
-LINEAR_TEAM_ID=your-team-id
-
-# Ashby (optional)
-ASHBY_API_KEY=your-ashby-key
-ASHBY_WEBHOOK_SECRET=your-secret
-
-# Linear State IDs (get from your Linear workspace)
-LINEAR_STATE_IDS__NEW_REQUEST=state-id
-LINEAR_STATE_IDS__FINANCE_REVIEW=state-id
-LINEAR_STATE_IDS__APPROVED=state-id
-LINEAR_STATE_IDS__OPENED_IN_ASHBY=state-id
-LINEAR_STATE_IDS__PENDING_OFFER=state-id
-LINEAR_STATE_IDS__HIRED=state-id
+npm run build
+NODE_ENV=production PORT=3000 node dist/server/index.js
 ```
 
-See [.env.example](.env.example) for complete configuration.
+### Docker
+
+```bash
+docker build -t hc-approval .
+docker run -p 3000:3000 --env-file .env hc-approval
+```
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions welcome! This is a showcase project, but feel free to:
 
-**Ways to Contribute:**
-- 🐛 Report bugs
-- 💡 Suggest new features
-- 📝 Improve documentation
-- 🔧 Submit pull requests
+- Report issues
+- Suggest improvements
+- Submit PRs
+- Fork for your own use
 
----
-
-## 📈 Roadmap
-
-### **Q4 2025**
-- [ ] Enhanced Slack notifications with blocks
-- [ ] Analytics dashboard for approval metrics
-- [ ] Custom Linear fields integration
-
-### **Q1 2026**
-- [ ] AI-powered budget suggestions (using OpenAI)
-- [ ] Predictive hiring timelines based on historical data
-- [ ] Workday API integration
-
-### **Q2 2026**
-- [ ] Custom workflow builders (no-code)
-- [ ] Advanced reporting and exports
-- [ ] Multi-tenant support for agencies
-
----
-
-## 🏢 Who Uses This?
-
-This system is perfect for:
-- **Startups** - Need HC approval but can't afford Workday
-- **Mid-size companies** - Want to automate headcount workflows
-- **Recruiting teams** - Looking for Linear/Slack/Ashby integration
-- **Engineering teams** - Want to see production-grade automation
-
----
-
-## 📊 Success Metrics
-
-**From our production deployment:**
-- ⚡ **66% faster approvals** (3-5 days → 1-3 days)
-- ✅ **100% data accuracy** (auto-synced from ATS)
-- 😊 **9/10 user satisfaction** (up from 6/10)
-- 🤖 **90%+ automation rate** (up from 40%)
+See `CONTRIBUTING.md` for guidelines.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - Feel free to use this for your own company!
 
 ---
 
-## 🙏 Acknowledgments
+## 🙏 Credits
 
-Built with:
-- [Slack Bolt](https://slack.dev/bolt-js/)
-- [Linear SDK](https://developers.linear.app/docs/sdk)
-- [Glean AI](https://www.glean.com/)
-- [Ashby API](https://developers.ashbyhq.com/)
+Built to streamline headcount approvals across a 500+ person organization.
 
-Inspired by the need for better, more transparent HC approval workflows.
-
----
-
-## 💬 Support
-
-- **Issues:** [GitHub Issues](https://github.com/scottdicke39/HCApproval/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/scottdicke39/HCApproval/discussions)
-- **Email:** scott.dicke@example.com
+**Key Achievements:**
+- Reduced approval time from 4 weeks → 2 weeks
+- Eliminated 90% of manual data entry
+- Centralized headcount visibility for Finance and Executive teams
+- Automated recruiter/coordinator assignment
+- Real-time Slack notifications at every stage
+- Beautiful, professional Linear issue formatting
 
 ---
 
-## ⭐ Star History
+## 📧 Contact
 
-If this project helped you, please consider giving it a star! ⭐
-
-[![Star History Chart](https://api.star-history.com/svg?repos=scottdicke39/HCApproval&type=Date)](https://star-history.com/#scottdicke39/HCApproval&Date)
+Questions? Reach out via [GitHub Issues](https://github.com/scottdicke39/HCApproval/issues).
 
 ---
 
-**Built with ❤️ by the Handshake team**
-
-*Making hiring transparent, fast, and effortless.*
-
+**Last Updated:** December 2025  
+**Version:** 2.0
